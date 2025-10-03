@@ -14,14 +14,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF78C800), // Fondo verde
+      backgroundColor: Color(0xFF78C800),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Imagen del logo
+              // Logo
               Image.asset(
                 'assets/images/logo.png',
                 width: 120,
@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF243841), // Título en azul oscuro
+                  color: Color(0xFF243841), 
                 ),
               ),
               SizedBox(height: 32),
@@ -66,14 +66,14 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF243841), // Fondo azul oscuro
+                    backgroundColor: Color(0xFF243841), 
                     padding: EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
                   onPressed: () {
-                    // Aquí iría la lógica de login
+                    // Lógica de login
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Intentando iniciar sesión...')),
                     );
@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text(
                   '¿No tienes cuenta? Regístrate',
                   style: TextStyle(
-                    color: Color(0xFF243841), // Texto en azul oscuro
+                    color: Color(0xFF243841), 
                     decoration: TextDecoration.underline,
                     fontSize: 16,
                   ),
