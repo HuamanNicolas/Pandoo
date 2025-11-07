@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "324123347818",
+    "project_id": "pandoo-64617",
+    "storage_bucket": "pandoo-64617.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324123347818:android:5b97e3335b0f117c5df313",
+        "android_client_info": {
+          "package_name": "com.example.pandoo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAcAKHMbKvoc72Mid466lMu6j19ZUwhKw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

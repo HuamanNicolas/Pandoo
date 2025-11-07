@@ -1,32 +1,57 @@
 import 'package:flutter/material.dart';
-import 'main_navigation.dart';
-import 'register_page.dart';
 import '../services/auth_service.dart';
+import 'login_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
+  final TextEditingController _nombreController = TextEditingController();
+  final TextEditingController _usuarioController = TextEditingController();
   final AuthService _authService = AuthService();
   bool _isLoading = false;
 
-  Future<void> _handleLogin() async {
+  Future<void> _handleRegister() async {
     String email = _emailController.text.trim();
     String password = _passController.text.trim();
+    String nombre = _nombreController.text.trim();
+    String usuario = _usuarioController.text.trim();
 
-    print('🔐 Intentando login con email: $email');
+    print('📝 Intentando registro con email: $email');
 
     // Validar campos vacíos
-    if (email.isEmpty || password.isEmpty) {
+    if (email.isEmpty || password.isEmpty || nombre.isEmpty || usuario.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Por favor ingresa email y contraseña'),
+          content: Text('Por favor completa todos los campos'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Validar formato de email
+    if (!email.contains('@')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Por favor ingresa un email válido'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Validar longitud de contraseña
+    if (password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('La contraseña debe tener al menos 6 caracteres'),
           backgroundColor: Colors.red,
         ),
       );
@@ -39,52 +64,43 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      // Llamar al servicio de autenticación
-      Map<String, dynamic> result = await _authService.login(
+      // Llamar al servicio de registro
+      Map<String, dynamic> result = await _authService.register(
         email: email,
         password: password,
+        nombre: nombre,
+        usuario: usuario,
       );
 
-      print('📊 Resultado del login: $result');
+      setState(() {
+        _isLoading = false;
+      });
+
+      print('📊 Resultado del registro: $result');
 
       if (result['success']) {
-        // Login exitoso - Obtener datos del usuario
-        Map<String, dynamic>? userData = await _authService.getUserData();
+        // Registro exitoso
+        print('✅ Registro exitoso');
 
-        setState(() {
-          _isLoading = false;
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
 
-        if (userData != null) {
-          print('✅ Datos del usuario obtenidos: $userData');
-          
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('¡Bienvenido ${userData['nombre']}!'),
-              backgroundColor: Colors.green,
-            ),
-          );
+        // Cerrar sesión automática y volver al login
+        await _authService.logout();
 
-          // Navegar al MainNavigation
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const MainNavigation()),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error al obtener datos del usuario'),
-              backgroundColor: Colors.orange,
-            ),
-          );
-        }
+        // Volver al login
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
       } else {
-        // Login fallido
-        setState(() {
-          _isLoading = false;
-        });
+        // Registro fallido
+        print('❌ Registro fallido: ${result['message']}');
 
-        print('❌ Login fallido: ${result['message']}');
-        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message']),
@@ -97,11 +113,11 @@ class _LoginPageState extends State<LoginPage> {
         _isLoading = false;
       });
 
-      print('❌ Error en login: $e');
+      print('❌ Error en registro: $e');
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error al iniciar sesión: $e'),
+          content: Text('Error al registrar: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -112,17 +128,25 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFF78C800),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0xFF243841)),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // Logo
-              Image.asset('assets/images/logo.png', width: 120, height: 120),
+              Image.asset('assets/images/logo.png', width: 100, height: 100),
               SizedBox(height: 24),
               Text(
-                'Iniciar Sesión',
+                'Crear Cuenta',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -130,6 +154,30 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 32),
+              TextField(
+                controller: _nombreController,
+                decoration: InputDecoration(
+                  labelText: 'Nombre completo',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: _usuarioController,
+                decoration: InputDecoration(
+                  labelText: 'Nombre de usuario',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+              ),
+              SizedBox(height: 16),
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -149,6 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Contraseña',
+                  hintText: 'Mínimo 6 caracteres',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -167,12 +216,8 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  onPressed:
-                      // Navegar al home con BottomNavigationBar
-                      _isLoading ? null : _handleLogin,
-
-                  child:
-                      _isLoading 
+                  onPressed: _isLoading ? null : _handleRegister,
+                  child: _isLoading
                       ? SizedBox(
                           height: 20,
                           width: 20,
@@ -184,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         )
                       : Text(
-                          'Iniciar sesión',
+                          'Registrarse',
                           style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                 ),
@@ -192,13 +237,10 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 12),
               GestureDetector(
                 onTap: () {
-                  // Navegar a la página de registro
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const RegisterPage()),
-                  );
+                  Navigator.pop(context);
                 },
                 child: Text(
-                  '¿No tienes cuenta? Regístrate',
+                  '¿Ya tienes cuenta? Inicia sesión',
                   style: TextStyle(
                     color: Color(0xFF243841),
                     decoration: TextDecoration.underline,
@@ -217,6 +259,8 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passController.dispose();
+    _nombreController.dispose();
+    _usuarioController.dispose();
     super.dispose();
   }
 }
