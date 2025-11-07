@@ -1,381 +1,367 @@
 import 'package:flutter/material.dart';
+import '../../utils/responsive.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final Responsive responsive = Responsive.of(context);
+    
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: 135,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xFF78C800),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Header con saludo y logo
+            Container(
+              height: responsive.hp(responsive.isTablet ? 12 : 16),
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Color(0xFF78C800),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                ),
               ),
-            ),
-            child: Stack(
-              children: [
-                Positioned(
-                  bottom: 20,
-                  left: 20,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Hola,', style: TextStyle(fontSize: 24)),
-                      Text(
-                        'Nico!',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
+              child: Stack(
+                children: [
+                  Positioned(
+                    bottom: responsive.hp(2),
+                    left: responsive.wp(5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hola,',
+                          style: TextStyle(
+                            fontSize: responsive.dp(responsive.isTablet ? 2 : 3),
+                          ),
                         ),
-                      ),
-                    ],
+                        Text(
+                          'Nico!',
+                          style: TextStyle(
+                            fontSize: responsive.dp(responsive.isTablet ? 2.5 : 3.5),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  right: 20,
-                  top: 0,
-                  bottom: 0,
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    width: 80,
-                    height: 80,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 30, top: 25, bottom: 10),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Cursos',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print('presionado');
-                      },
-                      onLongPress: () {
-                        print('long presionado');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 36, 56, 65),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Image.asset(
-                          'assets/images/Redes.png',
-                          width: 65,
-                          height: 65,
-                        ),
-                      ),
+                  Positioned(
+                    right: responsive.wp(5),
+                    top: 0,
+                    bottom: 0,
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: responsive.wp(responsive.isTablet ? 8 : 20),
+                      height: responsive.wp(responsive.isTablet ? 8 : 20),
                     ),
-                    Text('Redes', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print('presionado');
-                      },
-                      onLongPress: () {
-                        print('long presionado');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 36, 56, 65),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Image.asset(
-                          'assets/images/Ingles.png',
-                          width: 65,
-                          height: 65,
-                        ),
-                      ),
-                    ),
-                    Text('Inglés', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print('presionado');
-                      },
-                      onLongPress: () {
-                        print('long presionado');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 36, 56, 65),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Image.asset(
-                          'assets/images/Eyfc.png',
-                          width: 65,
-                          height: 65,
-                        ),
-                      ),
-                    ),
-                    Text('EyFC', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print('presionado');
-                      },
-                      onLongPress: () {
-                        print('long presionado');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 36, 56, 65),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Image.asset(
-                          'assets/images/Ayrp.png',
-                          width: 65,
-                          height: 65,
-                        ),
-                      ),
-                    ),
-                    Text('AyRP', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 350,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Tus cursos',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text('Ver todos', style: TextStyle(fontSize: 18)),
-              ],
-            ),
-          ),
-          SizedBox(height: 10),
-          InkWell(
-            onTap: () {
-              print('presionado');
-            },
-            child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-              margin: EdgeInsets.only(left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(81, 0, 0, 0),
-                    spreadRadius: 0.1,
-                    blurRadius: 10,
-                    offset: Offset(0, 3),
                   ),
                 ],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            
+            // Sección de Cursos
+            Container(
+              padding: EdgeInsets.only(
+                left: responsive.wp(7),
+                top: responsive.hp(3),
+                bottom: responsive.hp(1),
+              ),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Cursos',
+                style: TextStyle(
+                  fontSize: responsive.dp(responsive.isTablet ? 1.5 : 2.2),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            
+            // Iconos de Cursos
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: responsive.wp(5),
+                vertical: responsive.hp(2),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SizedBox(height: 10),
-                  Text(
+                  _buildCourseIcon(
+                    context,
+                    responsive,
+                    'assets/images/Redes.png',
                     'Redes',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
-                  Text(
-                    'Unidad 2 - Capa de apliación',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF78C800),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  SizedBox(
-                    height: 13,
-                    child: LinearProgressIndicator(
-                      value: 0.7, // 70% de progreso (valor entre 0.0 y 1.0)
-                      backgroundColor: const Color.fromARGB(255, 36, 56, 65),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFF78C800),
-                      ), // Verde
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          InkWell(
-            onTap: () {
-              print('presionado');
-            },
-            child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-              margin: EdgeInsets.only(left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(81, 0, 0, 0),
-                    spreadRadius: 0.1,
-                    blurRadius: 10,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10),
-                  Text(
+                  _buildCourseIcon(
+                    context,
+                    responsive,
+                    'assets/images/Ingles.png',
                     'Inglés',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
+                  _buildCourseIcon(
+                    context,
+                    responsive,
+                    'assets/images/Eyfc.png',
+                    'EyFC',
+                  ),
+                  _buildCourseIcon(
+                    context,
+                    responsive,
+                    'assets/images/Ayrp.png',
+                    'AyRP',
+                  ),
+                ],
+              ),
+            ),
+            
+            // Tus cursos - Header
+            Container(
+              constraints: BoxConstraints(maxWidth: responsive.isTablet ? 600 : double.infinity),
+              padding: EdgeInsets.symmetric(horizontal: responsive.wp(5)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Text(
-                    'Unidad 2 - Actividad 4',
+                    'Tus cursos',
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF78C800),
+                      fontSize: responsive.dp(responsive.isTablet ? 1.5 : 2.2),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8),
-                  SizedBox(
-                    height: 13,
-                    child: LinearProgressIndicator(
-                      value: 0.3, // 70% de progreso (valor entre 0.0 y 1.0)
-                      backgroundColor: const Color.fromARGB(255, 36, 56, 65),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFF78C800),
-                      ), // Verde
-                      borderRadius: BorderRadius.circular(10),
+                  Text(
+                    'Ver todos',
+                    style: TextStyle(
+                      fontSize: responsive.dp(responsive.isTablet ? 1.3 : 2),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 30, top: 25, bottom: 10),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Calculadoras',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            
+            SizedBox(height: responsive.hp(1)),
+            
+            // Tarjeta de curso 1
+            _buildCourseCard(
+              context,
+              responsive,
+              'Redes',
+              'Unidad 2 - Capa de aplicación',
+              0.7,
             ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print('presionado');
-                      },
-                      onLongPress: () {
-                        print('long presionado');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 0, 122, 204),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Image.asset(
-                          'assets/images/Calculate.png',
-                          width: 65,
-                          height: 65,
-                        ),
-                      ),
-                    ),
-                    Text('Redes', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print('presionado');
-                      },
-                      onLongPress: () {
-                        print('long presionado');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 155, 81, 224),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Image.asset(
-                          'assets/images/Calculate.png',
-                          width: 65,
-                          height: 65,
-                        ),
-                      ),
-                    ),
-                    Text('EyFC', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print('presionado');
-                      },
-                      onLongPress: () {
-                        print('long presionado');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 122, 0),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Image.asset(
-                          'assets/images/Calculate.png',
-                          width: 65,
-                          height: 65,
-                        ),
-                      ),
-                    ),
-                    Text('AyRP', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-              ],
+            
+            SizedBox(height: responsive.hp(2)),
+            
+            // Tarjeta de curso 2
+            _buildCourseCard(
+              context,
+              responsive,
+              'Inglés',
+              'Unidad 2 - Actividad 4',
+              0.3,
             ),
-          ),
-        ],
+            
+            // Sección de Calculadoras
+            Container(
+              padding: EdgeInsets.only(
+                left: responsive.wp(7),
+                top: responsive.hp(3),
+                bottom: responsive.hp(1),
+              ),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Calculadoras',
+                style: TextStyle(
+                  fontSize: responsive.dp(responsive.isTablet ? 1.5 : 2.2),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            
+            // Iconos de Calculadoras
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: responsive.wp(5),
+                vertical: responsive.hp(2),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildCalculatorIcon(
+                    context,
+                    responsive,
+                    'assets/images/Calculate.png',
+                    'Redes',
+                    const Color.fromARGB(255, 0, 122, 204),
+                  ),
+                  _buildCalculatorIcon(
+                    context,
+                    responsive,
+                    'assets/images/Calculate.png',
+                    'EyFC',
+                    const Color.fromARGB(255, 155, 81, 224),
+                  ),
+                  _buildCalculatorIcon(
+                    context,
+                    responsive,
+                    'assets/images/Calculate.png',
+                    'AyRP',
+                    const Color.fromARGB(255, 255, 122, 0),
+                  ),
+                ],
+              ),
+            ),
+            
+            SizedBox(height: responsive.hp(2)),
+          ],
+        ),
       ),
+    );
+  }
+
+  // Widget reutilizable para iconos de cursos
+  Widget _buildCourseIcon(
+    BuildContext context,
+    Responsive responsive,
+    String imagePath,
+    String label,
+  ) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            print('$label presionado');
+          },
+          onLongPress: () {
+            print('$label long presionado');
+          },
+          child: Container(
+            padding: EdgeInsets.all(responsive.wp(responsive.isTablet ? 1 : 1.5)),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 36, 56, 65),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Image.asset(
+              imagePath,
+              width: responsive.wp(responsive.isTablet ? 10 : 16),
+              height: responsive.wp(responsive.isTablet ? 10 : 16),
+            ),
+          ),
+        ),
+        SizedBox(height: responsive.hp(0.5)),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: responsive.dp(responsive.isTablet ? 1.2 : 1.8),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Widget reutilizable para tarjetas de curso
+  Widget _buildCourseCard(
+    BuildContext context,
+    Responsive responsive,
+    String title,
+    String subtitle,
+    double progress,
+  ) {
+    return InkWell(
+      onTap: () {
+        print('$title presionado');
+      },
+      child: Container(
+        constraints: BoxConstraints(maxWidth: responsive.isTablet ? 600 : double.infinity),
+        padding: EdgeInsets.all(responsive.wp(5)),
+        margin: EdgeInsets.symmetric(horizontal: responsive.wp(5)),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: const Color.fromARGB(81, 0, 0, 0),
+              spreadRadius: 0.1,
+              blurRadius: 10,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: responsive.dp(responsive.isTablet ? 1.5 : 2.2),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: responsive.hp(0.5)),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: responsive.dp(responsive.isTablet ? 1 : 1.5),
+                color: Color(0xFF78C800),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: responsive.hp(1)),
+            SizedBox(
+              height: responsive.hp(1.5),
+              child: LinearProgressIndicator(
+                value: progress,
+                backgroundColor: const Color.fromARGB(255, 36, 56, 65),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color(0xFF78C800),
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Widget reutilizable para iconos de calculadora
+  Widget _buildCalculatorIcon(
+    BuildContext context,
+    Responsive responsive,
+    String imagePath,
+    String label,
+    Color backgroundColor,
+  ) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            print('Calculadora $label presionada');
+          },
+          onLongPress: () {
+            print('Calculadora $label long presionada');
+          },
+          child: Container(
+            padding: EdgeInsets.all(responsive.wp(responsive.isTablet ? 1 : 1.5)),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Image.asset(
+              imagePath,
+              width: responsive.wp(responsive.isTablet ? 10 : 16),
+              height: responsive.wp(responsive.isTablet ? 10 : 16),
+            ),
+          ),
+        ),
+        SizedBox(height: responsive.hp(0.5)),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: responsive.dp(responsive.isTablet ? 1.2 : 1.8),
+          ),
+        ),
+      ],
     );
   }
 }
