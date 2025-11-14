@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
+
 Future<List> getpersona() async {
   List persona = [];
   CollectionReference coleccionreference = db.collection('User');
@@ -30,31 +31,4 @@ Future<void> updatePersona(String uid, String newNombre) async {
 
 Future<void> borrarPersona(String uid) async {
   await db.collection('User').doc(uid).delete();
-}
-
-Future<Map<String, dynamic>?> validarLogin(
-  String email,
-  String password,
-) async {
-  CollectionReference users = db.collection('User');
-  QuerySnapshot query = await users
-      .where('email', isEqualTo: email)
-      .where('password', isEqualTo: password)
-      .get();
-  if (query.docs.isNotEmpty) {
-    var documento = query.docs.first;
-    final Map<String, dynamic> data = documento.data() as Map<String, dynamic>;
-
-    final usuarioData = {
-      "id": documento.id,
-      "nombre": data['nombre'],
-      "usuario": data['usuario'],
-      "password": data['password'],
-      "email": data['email'],
-    };
-    return usuarioData;
-  }
-  
-  // Si no encuentra el usuario, retorna null
-  return null;
 }

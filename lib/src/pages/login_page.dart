@@ -21,8 +21,6 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text.trim();
     String password = _passController.text.trim();
 
-    print('🔐 Intentando login con email: $email');
-
     // Validar campos vacíos
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,8 +44,6 @@ class _LoginPageState extends State<LoginPage> {
         password: password,
       );
 
-      print('📊 Resultado del login: $result');
-
       if (result['success']) {
         // Login exitoso - Obtener datos del usuario
         Map<String, dynamic>? userData = await _authService.getUserData();
@@ -57,7 +53,6 @@ class _LoginPageState extends State<LoginPage> {
         });
 
         if (userData != null) {
-          print('✅ Datos del usuario obtenidos: $userData');
           
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -83,8 +78,6 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _isLoading = false;
         });
-
-        print('❌ Login fallido: ${result['message']}');
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -97,8 +90,6 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isLoading = false;
       });
-
-      print('❌ Error en login: $e');
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

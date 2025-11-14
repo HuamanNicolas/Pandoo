@@ -16,8 +16,6 @@ class AuthService {
     required String usuario,
   }) async {
     try {
-      print('🔐 Iniciando registro para: $email');
-
       // 1. Crear usuario en Firebase Authentication
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -25,7 +23,6 @@ class AuthService {
       );
 
       String uid = userCredential.user!.uid;
-      print('✅ Usuario creado en Auth con UID: $uid');
 
       // 2. Crear documento en Firestore con el UID como ID
       await _firestore.collection('users').doc(uid).set({
@@ -35,15 +32,13 @@ class AuthService {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      print('✅ Documento creado en Firestore');
-
       return {
         'success': true,
         'message': 'Usuario registrado exitosamente',
         'uid': uid,
       };
     } on FirebaseAuthException catch (e) {
-      print('❌ Error de autenticación: ${e.code}');
+      print('Error de autenticación: ${e.code}');
       
       String message;
       switch (e.code) {
@@ -65,7 +60,7 @@ class AuthService {
         'message': message,
       };
     } catch (e) {
-      print('❌ Error general: $e');
+      print('Error general: $e');
       return {
         'success': false,
         'message': 'Error inesperado: $e',
@@ -79,23 +74,19 @@ class AuthService {
     required String password,
   }) async {
     try {
-      print('🔐 Iniciando sesión para: $email');
-
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       String uid = userCredential.user!.uid;
-      print('✅ Sesión iniciada con UID: $uid');
-
+     
       return {
         'success': true,
         'message': 'Sesión iniciada correctamente',
         'uid': uid,
       };
     } on FirebaseAuthException catch (e) {
-      print('❌ Error de autenticación: ${e.code}');
 
       String message;
       switch (e.code) {
@@ -123,7 +114,6 @@ class AuthService {
         'message': message,
       };
     } catch (e) {
-      print('❌ Error general: $e');
       return {
         'success': false,
         'message': 'Error inesperado: $e',
@@ -137,39 +127,29 @@ class AuthService {
       User? user = _auth.currentUser;
 
       if (user == null) {
-        print('❌ No hay usuario logueado');
         return null;
       }
 
       String uid = user.uid;
-      print('🔍 Obteniendo datos del usuario con UID: $uid');
 
       DocumentSnapshot doc = await _firestore.collection('users').doc(uid).get();
 
       if (!doc.exists) {
-        print('❌ No se encontró el documento del usuario');
         return null;
       }
 
       Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
       userData['uid'] = uid; // Agregar el UID a los datos
 
-      print('✅ Datos del usuario obtenidos: $userData');
       return userData;
     } catch (e) {
-      print('❌ Error al obtener datos: $e');
       return null;
     }
   }
 
   /// Cerrar sesión
   Future<void> logout() async {
-    try {
       await _auth.signOut();
-      print('✅ Sesión cerrada correctamente');
-    } catch (e) {
-      print('❌ Error al cerrar sesión: $e');
-    }
   }
 
   /// Verificar si hay un usuario logueado

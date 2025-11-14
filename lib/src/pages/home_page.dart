@@ -1,8 +1,61 @@
 import 'package:flutter/material.dart';
 import '../../utils/responsive.dart';
+import '../models/course.dart';
+import '../services/course_service.dart';
+import '../services/auth_service.dart';
+import 'course_detail_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final CourseService _courseService = CourseService();
+  final AuthService _authService = AuthService();
+  Course? programacionCourse;
+  String userName = 'Usuario';
+  List<Map<String, dynamic>> userCourses = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    // Cargar curso principal
+    final course = await _courseService.getCourse('curso1');
+    
+    // Cargar datos del usuario
+    final userData = await _authService.getUserData();
+    
+    // Cargar cursos del usuario con progreso
+    final courseIds = await _courseService.getUserCourses();
+    List<Map<String, dynamic>> coursesWithProgress = [];
+    
+    for (String courseId in courseIds) {
+      final courseData = await _courseService.getCourseWithProgress(courseId);
+      if (courseData != null) {
+        coursesWithProgress.add(courseData);
+      }
+    }
+    
+    // Verificar que el widget sigue montado antes de llamar setState
+    if (!mounted) return;
+    
+    setState(() {
+      programacionCourse = course;
+      userCourses = coursesWithProgress;
+      if (userData != null && userData['usuario'] != null) {
+        userName = userData['usuario'];
+      }
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +91,7 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Nico!',
+                          '$userName!',
                           style: TextStyle(
                             fontSize: responsive.dp(responsive.isTablet ? 2.5 : 3.5),
                             fontWeight: FontWeight.bold,
@@ -87,12 +140,32 @@ class HomePage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildCourseIcon(
-                    context,
-                    responsive,
-                    'assets/images/Redes.png',
-                    'Redes',
-                  ),
+                  // Curso dinámico de Programación desde Firebase
+                  if (isLoading)
+                    SizedBox(
+                      width: responsive.wp(responsive.isTablet ? 10 : 16),
+                      height: responsive.wp(responsive.isTablet ? 10 : 16),
+                      child: const CircularProgressIndicator(
+                        color: Color(0xFF78C800),
+                      ),
+                    )
+                  else if (programacionCourse != null)
+                    _buildCourseIcon(
+                      context,
+                      responsive,
+                      'assets/images/${programacionCourse!.imagen}',
+                      programacionCourse!.nombre,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CourseDetailPage(
+                              courseId: programacionCourse!.id,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   _buildCourseIcon(
                     context,
                     responsive,
@@ -141,25 +214,46 @@ class HomePage extends StatelessWidget {
             
             SizedBox(height: responsive.hp(1)),
             
-            // Tarjeta de curso 1
-            _buildCourseCard(
-              context,
-              responsive,
-              'Redes',
-              'Unidad 2 - Capa de aplicación',
-              0.7,
-            ),
-            
-            SizedBox(height: responsive.hp(2)),
-            
-            // Tarjeta de curso 2
-            _buildCourseCard(
-              context,
-              responsive,
-              'Inglés',
-              'Unidad 2 - Actividad 4',
-              0.3,
-            ),
+            // Tarjetas de cursos del usuario (dinámicas)
+            if (userCourses.isEmpty)
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: responsive.wp(5),
+                  vertical: responsive.hp(3),
+                ),
+                child: Center(
+                  child: Text(
+                    'No estás suscrito a ningún curso aún',
+                    style: TextStyle(
+                      fontSize: responsive.dp(responsive.isTablet ? 1.3 : 1.8),
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              )
+            else
+              ...userCourses.map((courseData) {
+                final course = courseData['course'] as Course;
+                final progress = courseData['progress'] as int;
+                final completedActivities = courseData['completedActivities'] as List<String>;
+                final totalActivities = courseData['totalActivities'] as int;
+                
+                String subtitle = totalActivities > 0
+                    ? '${completedActivities.length} de $totalActivities actividades completadas'
+                    : 'Sin actividades';
+                
+                return Padding(
+                  padding: EdgeInsets.only(bottom: responsive.hp(2)),
+                  child: _buildCourseCard(
+                    context,
+                    responsive,
+                    course.nombre,
+                    subtitle,
+                    progress / 100,
+                    courseId: course.id,
+                  ),
+                );
+              }).toList(),
             
             // Sección de Calculadoras
             Container(
@@ -224,12 +318,13 @@ class HomePage extends StatelessWidget {
     BuildContext context,
     Responsive responsive,
     String imagePath,
-    String label,
-  ) {
+    String label, {
+    VoidCallback? onTap,
+  }) {
     return Column(
       children: [
         InkWell(
-          onTap: () {
+          onTap: onTap ?? () {
             print('$label presionado');
           },
           onLongPress: () {
@@ -245,14 +340,27 @@ class HomePage extends StatelessWidget {
               imagePath,
               width: responsive.wp(responsive.isTablet ? 10 : 16),
               height: responsive.wp(responsive.isTablet ? 10 : 16),
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(
+                  Icons.school,
+                  size: responsive.wp(responsive.isTablet ? 10 : 16),
+                  color: Colors.white,
+                );
+              },
             ),
           ),
         ),
         SizedBox(height: responsive.hp(0.5)),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: responsive.dp(responsive.isTablet ? 1.2 : 1.8),
+        SizedBox(
+          width: responsive.wp(responsive.isTablet ? 15 : 20),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: responsive.dp(responsive.isTablet ? 1.2 : 1.8),
+            ),
           ),
         ),
       ],
@@ -265,11 +373,24 @@ class HomePage extends StatelessWidget {
     Responsive responsive,
     String title,
     String subtitle,
-    double progress,
-  ) {
+    double progress, {
+    String? courseId,
+  }) {
     return InkWell(
       onTap: () {
-        print('$title presionado');
+        if (courseId != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CourseDetailPage(courseId: courseId),
+            ),
+          ).then((_) {
+            // Recargar datos al volver de la página de detalle
+            _loadData();
+          });
+        } else {
+          print('$title presionado');
+        }
       },
       child: Container(
         constraints: BoxConstraints(maxWidth: responsive.isTablet ? 600 : double.infinity),

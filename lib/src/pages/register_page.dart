@@ -24,8 +24,6 @@ class _RegisterPageState extends State<RegisterPage> {
     String nombre = _nombreController.text.trim();
     String usuario = _usuarioController.text.trim();
 
-    print('📝 Intentando registro con email: $email');
-
     // Validar campos vacíos
     if (email.isEmpty || password.isEmpty || nombre.isEmpty || usuario.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -77,12 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _isLoading = false;
       });
 
-      print('📊 Resultado del registro: $result');
-
       if (result['success']) {
-        // Registro exitoso
-        print('✅ Registro exitoso');
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!'),
@@ -99,9 +92,6 @@ class _RegisterPageState extends State<RegisterPage> {
           MaterialPageRoute(builder: (context) => const LoginPage()),
         );
       } else {
-        // Registro fallido
-        print('❌ Registro fallido: ${result['message']}');
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message']),
@@ -113,8 +103,6 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         _isLoading = false;
       });
-
-      print('❌ Error en registro: $e');
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
