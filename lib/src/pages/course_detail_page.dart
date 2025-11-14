@@ -221,6 +221,17 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                             
                             ...actividades.map((actividad) => InkWell(
                                   onTap: () {
+                                    // Validar si el usuario está suscrito antes de acceder
+                                    if (!isSubscribed) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Debes suscribirte al curso para acceder a las actividades'),
+                                          backgroundColor: Colors.orange,
+                                          duration: Duration(seconds: 3),
+                                        ),
+                                      );
+                                      return;
+                                    }
                                     
                                     Navigator.push(
                                       context,
@@ -236,7 +247,9 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                     margin: EdgeInsets.only(bottom: responsive.hp(1.5)),
                                     padding: EdgeInsets.all(responsive.wp(4)),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: isSubscribed 
+                                          ? Colors.white 
+                                          : Colors.grey.withOpacity(0.3),
                                       borderRadius: BorderRadius.circular(15),
                                       boxShadow: [
                                         BoxShadow(
@@ -251,19 +264,27 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                         Container(
                                           width: responsive.wp(responsive.isTablet ? 8 : 12),
                                           height: responsive.wp(responsive.isTablet ? 8 : 12),
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xFF78C800),
+                                          decoration: BoxDecoration(
+                                            color: isSubscribed 
+                                                ? const Color(0xFF78C800) 
+                                                : Colors.grey,
                                             shape: BoxShape.circle,
                                           ),
                                           child: Center(
-                                            child: Text(
-                                              '${actividad.orden}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: responsive.dp(responsive.isTablet ? 1.5 : 2),
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
+                                            child: isSubscribed
+                                                ? Text(
+                                                    '${actividad.orden}',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: responsive.dp(responsive.isTablet ? 1.5 : 2),
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  )
+                                                : Icon(
+                                                    Icons.lock,
+                                                    color: Colors.white,
+                                                    size: responsive.wp(responsive.isTablet ? 5 : 7),
+                                                  ),
                                           ),
                                         ),
                                         SizedBox(width: responsive.wp(4)),
@@ -273,12 +294,19 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                             style: TextStyle(
                                               fontSize: responsive.dp(responsive.isTablet ? 1.3 : 1.8),
                                               fontWeight: FontWeight.w500,
+                                              color: isSubscribed 
+                                                  ? Colors.black 
+                                                  : Colors.grey,
                                             ),
                                           ),
                                         ),
                                         Icon(
-                                          Icons.arrow_forward_ios,
-                                          color: const Color(0xFF78C800),
+                                          isSubscribed 
+                                              ? Icons.arrow_forward_ios 
+                                              : Icons.lock_outline,
+                                          color: isSubscribed 
+                                              ? const Color(0xFF78C800) 
+                                              : Colors.grey,
                                           size: responsive.wp(responsive.isTablet ? 5 : 6),
                                         ),
                                       ],
