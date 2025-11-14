@@ -92,7 +92,6 @@ class CourseService {
     try {
       final userId = _auth.currentUser?.uid;
       if (userId == null) {
-        print('Usuario no autenticado');
         return false;
       }
 
@@ -109,8 +108,6 @@ class CourseService {
           .collection('cursos')
           .doc(courseId)
           .set(userCourse.toMap());
-
-      print('Usuario suscrito al curso exitosamente');
       return true;
     } catch (e) {
       print('Error suscribiendo al curso: $e');
@@ -201,7 +198,6 @@ class CourseService {
         'progreso': progreso,
       });
 
-      print('Actividad completada. Progreso: $progreso%');
       return true;
     } catch (e) {
       print('Error completando actividad: $e');

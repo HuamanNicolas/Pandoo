@@ -16,6 +16,7 @@ class _HomePageState extends State<HomePage> {
   final CourseService _courseService = CourseService();
   final AuthService _authService = AuthService();
   Course? programacionCourse;
+  Course? inglesCourse;
   String userName = 'Usuario';
   List<Map<String, dynamic>> userCourses = [];
   bool isLoading = true;
@@ -27,8 +28,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadData() async {
-    // Cargar curso principal
-    final course = await _courseService.getCourse('curso1');
+    // Cargar cursos disponibles
+    final courseProgramacion = await _courseService.getCourse('curso1');
+    final courseIngles = await _courseService.getCourse('curso2');
     
     // Cargar datos del usuario
     final userData = await _authService.getUserData();
@@ -48,7 +50,8 @@ class _HomePageState extends State<HomePage> {
     if (!mounted) return;
     
     setState(() {
-      programacionCourse = course;
+      programacionCourse = courseProgramacion;
+      inglesCourse = courseIngles;
       userCourses = coursesWithProgress;
       if (userData != null && userData['usuario'] != null) {
         userName = userData['usuario'];
@@ -166,12 +169,32 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     ),
-                  _buildCourseIcon(
-                    context,
-                    responsive,
-                    'assets/images/Ingles.png',
-                    'Inglés',
-                  ),
+                  // Curso dinámico de Inglés desde Firebase
+                  if (isLoading)
+                    SizedBox(
+                      width: responsive.wp(responsive.isTablet ? 10 : 16),
+                      height: responsive.wp(responsive.isTablet ? 10 : 16),
+                      child: const CircularProgressIndicator(
+                        color: Color(0xFF78C800),
+                      ),
+                    )
+                  else if (inglesCourse != null)
+                    _buildCourseIcon(
+                      context,
+                      responsive,
+                      'assets/images/${inglesCourse!.imagen}',
+                      inglesCourse!.nombre,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CourseDetailPage(
+                              courseId: inglesCourse!.id,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   _buildCourseIcon(
                     context,
                     responsive,
